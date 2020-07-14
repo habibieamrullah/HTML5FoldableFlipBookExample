@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Foldable Flip Book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script type="text/javascript" src="extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="extras/modernizr.2.5.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="fa/css/font-awesome.css">
+    <style>
+			body{
+				background-color: black;
+				user-select: none;
+			}
+			.bpage{
+				background-color: white;
+				overflow: auto;
+				padding-bottom: 70px;
+			}
+			.bpcontent{
+				text-align: justify;
+			}
+			img{
+				width: 100%;
+			}
+			button{
+				background-color: blue;
+				color: white;
+				border-radius: 10px;
+				border: none;
+				padding: 10px;
+				margin: 10px;
+			}
+		</style>
+</head>
+<body>
+<div style="text-align: center;">
+    <div id="flipbook" style="margin: 0 auto; display: inline-block;">
+    </div>
+</div>
+
+<script type="text/javascript">
+			var bookname = "Foldable Flip Book"
+			var pnum = 2
+			var currentfs = 14
+			var maxpage = 6
+			function loadpages(){
+				var applulad = ""
+				$("#flipbook").append("<div class='bpage'><div class='bpcontent'><img src='pages/"+pnum+".jpg'></div></div>")
+				pnum++
+				if(pnum <= maxpage)
+					loadpages()
+				else{
+					yepnope({
+						test : Modernizr.csstransforms,
+						yep: ['lib/turn.js'],
+						nope: ['lib/turn.html4.min.js'],
+						both: ['css/basic.css'],
+						complete: loadApp
+					});
+				}
+			}
+
+			loadpages()
+
+			function loadApp(){
+				$("#flipbook").turn({
+					width: innerWidth,
+					height: innerHeight,
+					gradients: true,
+					elevation: 0,
+					autoCenter: true
+				});
+				$("#loader").fadeOut()
+			}
+
+			function textsizePlus(){
+				if(currentfs < 40){
+					currentfs = currentfs + 1
+					$("body").css({'font-size':currentfs + "px"})
+				}
+			}
+			function textsizeMinus(){
+				if(currentfs > 8){
+					currentfs = (currentfs - 1)
+					$("body").css({'font-size':currentfs+"px"})
+				}
+			}
+
+			function toLastPage(){
+				$("#flipbook").turn("page", $("#flipbook").turn("pages"))
+				showAd()
+			}
+			function toFirstPage(){
+				$("#flipbook").turn("page", 1)
+				showAd()
+			}
+			function openPage(n){
+				showAd()
+				if(n <= maxpage && n > 0)
+					$("#flipbook").turn("page", n)
+			}
+			function openPrevPage(){
+				$("#flipbook").turn("previous")
+				showAd()
+			}
+			function openNextPage(){
+				$("#flipbook").turn("next")
+				showAd()
+			}
+
+			var jtp
+			function jumpToPage(){
+				clearTimeout(jtp)
+				jtp = setTimeout(function(){
+					$("#flipbook").turn("page", parseInt($("#inputpage").val()))
+					showAd()
+				}, 500)
+			}
+
+			$("title").html("KLBook - " + bookname)
+			
+		</script>
+
+</body>
+</html>
